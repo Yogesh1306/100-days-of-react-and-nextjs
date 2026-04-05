@@ -2,7 +2,7 @@ export const downloadAvatar = async (url: string, name: string | "avatar") => {
     if (!url) return;
     try {
 
-        const proxyUrl = `https://cors-anywhere.herokuapp.com/${url}`;
+        const proxyUrl = `https://avatar-proxy-server.onrender.com/proxy?url=${encodeURIComponent(url)}`;
 
         const res = await fetch(proxyUrl);
         const blob = await res.blob();
