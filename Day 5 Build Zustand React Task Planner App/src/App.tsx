@@ -32,7 +32,6 @@ const App = () => {
   const [selectedPriority, setSelectedPriority] = useState("highest");
   const [filterDate, setFilterDate] = useState<string | null>(null);
 
-
   const filteredTasks = tasks.filter((task) => {
     if (filterDate === null) return true; // Show all if no filter is selected
     return moment(task.createdAt).format("YYYY-MM-DD") === filterDate;
@@ -55,9 +54,12 @@ const App = () => {
   };
 
   const createTask = (value: valueType) => {
-    value.status = "pending";
-    value.id = crypto.randomUUID();
-    addTasks(value);
+    const newTask: valueType = {
+      ...value,
+      status: "pending",
+      id: crypto.randomUUID(),
+    };
+    addTasks(newTask);
     handleClose();
   };
 
@@ -131,7 +133,7 @@ const App = () => {
           <span>All Rights Reserved</span>
         </div>
         <div className="flex items-center justify-center gap-4 mx-2 font-medium">
-          <span className="text-white ">Total: {tasks.length}</span>
+          <span className="text-white ">Total: {filteredTasks.length}</span>
           <span className="text-amber-400">Pending: {pendingTasks.length}</span>
           <span className="text-blue-300">
             InProgress: {inProgressTasks.length}

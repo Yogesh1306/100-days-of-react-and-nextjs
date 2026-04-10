@@ -77,9 +77,9 @@ const TaskCard = ({
                 </div>
               </div>
               {filterArray.length > 0 ? (
-                filterArray.map((item, index) => (
+                filterArray.map((item) => (
                   <>
-                    <Card hoverable key={index} className="w-full!">
+                    <Card hoverable key={item.id} className="w-full!">
                       <Card.Meta
                         title={item.title}
                         description={item.description}

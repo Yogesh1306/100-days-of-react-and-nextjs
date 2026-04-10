@@ -31,7 +31,7 @@ export const usePlanner = create<PlannerState>()(persist(
         })),
         changeTaskStatus: (id, status) => set((state) => ({
             tasks: state.tasks.filter(item => {
-                if (item.id == id) {
+                if (item.id === id) {
                     item.status = status
                 }
                 return item
