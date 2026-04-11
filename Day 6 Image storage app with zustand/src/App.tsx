@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Download, Trash2, Upload, ImageIcon, X } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import { useImageStore } from "./store/useImageStore";
-import "./index.css"
+import "./index.css";
 
 const REQ_SIZE = 3 * 1024 * 1024;
 
@@ -11,7 +11,7 @@ interface ImageType {
   name: string;
   size: number;
   binary: string | ArrayBuffer | null;
-  createdAt: Date;
+  createdAt: number;
 }
 
 const App = () => {
@@ -29,13 +29,16 @@ const App = () => {
     }
     const reader = new FileReader();
     reader.readAsDataURL(file);
+    reader.onerror = () => {
+      toast.error("Failed to read the file");
+    };
     reader.onload = () => {
       setImage({
         id: crypto.randomUUID(),
         name: file.name,
         size: file.size,
         binary: reader.result,
-        createdAt: new Date(),
+        createdAt: Date.now(),
       });
       toast.success("Image uploaded successfully");
     };
@@ -55,8 +58,12 @@ const App = () => {
   };
 
   const handleDownload = (item: ImageType) => {
+    if (typeof item.binary !== "string") {
+      toast.error("Unable to download image");
+      return;
+    }
     const a = document.createElement("a");
-    a.href = item.binary as string;
+    a.href = item.binary;
     a.download = item.name;
     a.click();
     a.remove();
@@ -198,7 +205,7 @@ const App = () => {
                     <div className="flex gap-1.5 text-[11px] text-[#45455f] font-light mb-3">
                       <span>{formatSize(image.size)}</span>
                       <span>·</span>
-                      <span>{formatDate(image.createdAt)}</span>
+                      <span>{formatDate(new Date(image.createdAt))}</span>
                     </div>
 
                     {/* Action buttons */}
@@ -228,7 +235,7 @@ const App = () => {
 
       {/* ── Lightbox ── */}
       {preview && (
-        <button
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-fadeIn"
           onClick={() => setPreview(null)}
         >
@@ -236,7 +243,7 @@ const App = () => {
           <div className="absolute inset-0 bg-black/85 backdrop-blur-xl" />
 
           {/* Modal */}
-          <button
+          <div
             className="relative z-10 w-full max-w-3xl bg-[#16161f] border border-white/[0.14] rounded-2xl overflow-hidden animate-scaleIn"
             onClick={(e) => e.stopPropagation()}
           >
@@ -262,7 +269,7 @@ const App = () => {
                   {preview.name}
                 </p>
                 <p className="text-xs text-[#45455f] font-light mt-0.5">
-                  {formatSize(preview.size)} · {formatDate(preview.createdAt)}
+                  {formatSize(preview.size)} · {formatDate(new Date(preview.createdAt))}
                 </p>
               </div>
               <button
@@ -273,8 +280,8 @@ const App = () => {
                 Download
               </button>
             </div>
-          </button>
-        </button>
+          </div>
+        </div>
       )}
 
       <ToastContainer

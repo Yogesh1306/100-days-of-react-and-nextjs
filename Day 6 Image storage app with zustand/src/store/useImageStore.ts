@@ -6,7 +6,7 @@ interface PayloadType {
     name: string,
     size: number,
     binary: string | ArrayBuffer | null,
-    createdAt: Date,
+    createdAt: number,
 }
 
 type persistType = {
